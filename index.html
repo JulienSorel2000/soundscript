@@ -247,6 +247,16 @@ main{
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
 .st-text{font-family:'DM Mono',monospace;font-size:11px;color:var(--text3)}
 
+/* Retry button */
+.retry-btn{
+  margin-left:auto;padding:4px 12px;
+  background:transparent;border:1px solid #e87474;border-radius:5px;
+  color:#e87474;font-family:'DM Mono',monospace;font-size:11px;
+  cursor:pointer;transition:all 0.2s;display:none;
+}
+.retry-btn:hover{background:rgba(232,116,116,0.1)}
+.retry-btn.show{display:inline-block}
+
 /* Animations */
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 .input-section{animation:fadeUp 0.6s ease-out}
@@ -282,7 +292,7 @@ main{
         <span>📄</span><span id="srtUploadLabel">上传 SRT 字幕</span>
         <input type="file" accept=".srt,.vtt,.txt" onchange="handleSrtUpload(this)">
       </label>
-      <span class="help-text" id="helpText">无需后端 · Piped API · 后台播放</span>
+      <span class="help-text" id="helpText">无需后端 · 多源容错 · 后台播放</span>
     </div>
   </div>
 
@@ -353,6 +363,7 @@ main{
   <div class="status">
     <div class="st-dot" id="stDot"></div>
     <span class="st-text" id="stText">就绪</span>
+    <button class="retry-btn" id="retryBtn" onclick="handleRetry()">重试</button>
   </div>
 </main>
 
@@ -360,14 +371,105 @@ main{
 
 <script>
 // ================================================================
-// Piped 公开实例列表 — 依次尝试直到一个可用
+// 多源配置
 // ================================================================
-const PIPED_INSTANCES = [
-  'https://pipedapi.kavin.rocks',
-  'https://pipedapi.adminforge.de',
-  'https://pipedapi.leptons.xyz',
-  'https://piped-api.privacy.com.de',
-];
+const SOURCES = {
+  cobalt: {
+    name: 'Cobalt',
+    async getAudio(videoId) {
+      const resp = await fetch('https://api.cobalt.tools/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+          url: `https://www.youtube.com/watch?v=${videoId}`,
+          audioFormat: 'mp3',
+          isAudioOnly: true,
+        }),
+        signal: AbortSignal.timeout(8000),
+      });
+      if (!resp.ok) throw new Error(`cobalt: HTTP ${resp.status}`);
+      const data = await resp.json();
+      if (data.url) return { audioUrl: data.url, title: null, uploader: null, thumbnailUrl: null, duration: null, subtitles: [] };
+      throw new Error('cobalt: no url in response');
+    }
+  },
+
+  piped: {
+    name: 'Piped',
+    instances: [
+      'https://pipedapi.kavin.rocks',
+      'https://pipedapi.adminforge.de',
+      'https://pipedapi.leptons.xyz',
+      'https://piped-api.privacy.com.de',
+    ],
+    async getAudio(videoId) {
+      for (const inst of this.instances) {
+        try {
+          const resp = await fetch(`${inst}/streams/${videoId}`, { signal: AbortSignal.timeout(8000) });
+          if (!resp.ok) continue;
+          const data = await resp.json();
+          if (!data.audioStreams?.length) continue;
+          const best = data.audioStreams
+            .filter(s => s.mimeType?.startsWith('audio/') || s.url)
+            .sort((a, b) => (b.bitrate || 0) - (a.bitrate || 0))[0];
+          if (!best?.url) continue;
+          return {
+            audioUrl: best.url,
+            title: data.title || null,
+            uploader: data.uploader || null,
+            thumbnailUrl: data.thumbnailUrl || null,
+            duration: data.duration || null,
+            subtitles: data.subtitles || [],
+            quality: best.quality || '',
+          };
+        } catch(e) { /* try next */ }
+      }
+      throw new Error('piped: all instances failed');
+    }
+  },
+
+  invidious: {
+    name: 'Invidious',
+    instances: [
+      'https://inv.nadeko.net',
+      'https://yewtu.be',
+      'https://invidious.nerdvpn.de',
+    ],
+    async getAudio(videoId) {
+      for (const inst of this.instances) {
+        try {
+          const resp = await fetch(`${inst}/api/v1/videos/${videoId}`, { signal: AbortSignal.timeout(8000) });
+          if (!resp.ok) continue;
+          const data = await resp.json();
+          const audioFormats = (data.adaptiveFormats || [])
+            .filter(f => f.type?.startsWith('audio/'))
+            .sort((a, b) => (b.bitrate || 0) - (a.bitrate || 0));
+          if (!audioFormats[0]?.url) continue;
+          // Map captions to subtitle-like objects
+          const subtitles = (data.captions || []).map(c => ({
+            url: `${inst}${c.url}`,
+            code: c.languageCode || c.label || '',
+          }));
+          return {
+            audioUrl: audioFormats[0].url,
+            title: data.title || null,
+            uploader: data.author || null,
+            thumbnailUrl: (data.videoThumbnails || []).find(t => t.quality === 'maxres')?.url
+              || (data.videoThumbnails || [])[0]?.url || null,
+            duration: data.lengthSeconds || null,
+            subtitles,
+          };
+        } catch(e) { /* try next */ }
+      }
+      throw new Error('invidious: all instances failed');
+    }
+  }
+};
+
+const SOURCE_ORDER = ['cobalt', 'piped', 'invidious'];
 
 // ================================================================
 // 状态
@@ -383,8 +485,9 @@ let isMuted = false;
 let currentTitle = '';
 let currentArtist = '';
 let currentThumbnail = '';
+let lastVideoId = null;
 
-// Visualizer (pure decoration — fake random animation when playing)
+// Visualizer
 let vizBars = [];
 let vizRaf = null;
 (function initViz() {
@@ -450,21 +553,19 @@ function extractVideoId(url) {
 }
 
 // ================================================================
-// 请求 Piped API — 依次尝试实例
+// 多源音频解析 — 依次尝试
 // ================================================================
-async function fetchPiped(videoId) {
-  for (const base of PIPED_INSTANCES) {
+async function resolveAudio(videoId) {
+  for (const name of SOURCE_ORDER) {
     try {
-      const resp = await fetch(`${base}/streams/${videoId}`, {signal: AbortSignal.timeout(8000)});
-      if (resp.ok) {
-        const data = await resp.json();
-        if (data && data.audioStreams) return data;
-      }
+      setStatus('wait', `正在尝试 ${SOURCES[name].name}...`);
+      const result = await SOURCES[name].getAudio(videoId);
+      return { ...result, sourceName: SOURCES[name].name };
     } catch(e) {
-      // 尝试下一个实例
+      // 继续下一个来源
     }
   }
-  return null;
+  throw new Error('所有来源均不可用，请稍后重试');
 }
 
 // ================================================================
@@ -475,20 +576,15 @@ async function handleParse() {
   if (!url) return;
 
   const vid = extractVideoId(url);
-  if (!vid) { setStatus('err', '无法识别的 YouTube 链接'); return; }
+  if (!vid) { setStatus('err', '无法识别的 YouTube 链接'); showRetry(false); return; }
 
+  lastVideoId = vid;
   const btn = document.getElementById('parseBtn');
   btn.disabled = true;
-  setStatus('wait', '正在通过 Piped API 获取音频...');
+  showRetry(false);
 
   try {
-    const data = await fetchPiped(vid);
-    if (!data) { setStatus('err', '所有 Piped 实例均无响应，请稍后再试'); return; }
-
-    // 选最高 bitrate 音频流
-    const streams = (data.audioStreams || []).sort((a, b) => (b.bitrate || 0) - (a.bitrate || 0));
-    if (!streams.length) { setStatus('err', '未找到可用音频流'); return; }
-    const best = streams[0];
+    const data = await resolveAudio(vid);
 
     // 加载音频
     currentTitle  = data.title || '未知标题';
@@ -506,23 +602,38 @@ async function handleParse() {
       document.getElementById('coverPlaceholder').style.display = 'none';
     }
 
-    // 直接设置 src（不设 crossOrigin，避免 CORS 拦截）
-    audio.src = best.url;
+    // 设置 src（不设 crossOrigin，避免 CORS 拦截）
+    audio.src = data.audioUrl;
     audio.volume = document.getElementById('volSlider').value / 100;
     audio.playbackRate = speeds[spdIdx];
     audio.load();
 
     updateMediaSession();
-    setStatus('ok', `音频已就绪 · ${best.quality || ''} · 支持后台播放`);
+    const qualityNote = data.quality ? ` · ${data.quality}` : '';
+    setStatus('ok', `已就绪 via ${data.sourceName}${qualityNote} · 支持后台播放`);
 
     // 获取字幕
-    await loadSubtitles(data.subtitles || []);
+    if (data.subtitles?.length) {
+      await loadSubtitles(data.subtitles);
+    }
 
   } catch(err) {
-    setStatus('err', '错误: ' + err.message);
+    setStatus('err', err.message);
+    showRetry(true);
   } finally {
     btn.disabled = false;
   }
+}
+
+function handleRetry() {
+  if (lastVideoId) {
+    document.getElementById('urlInput').value = `https://www.youtube.com/watch?v=${lastVideoId}`;
+    handleParse();
+  }
+}
+
+function showRetry(show) {
+  document.getElementById('retryBtn').classList.toggle('show', show);
 }
 
 // ================================================================
@@ -583,6 +694,7 @@ audio.addEventListener('ended', () => {
 
 audio.addEventListener('error', () => {
   setStatus('err', '音频流加载失败（直链可能已过期，请重新解析）');
+  showRetry(true);
 });
 
 // ================================================================
