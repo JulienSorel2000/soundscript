@@ -66,18 +66,8 @@ header{
 }
 
 .logo{display:flex;align-items:baseline;gap:10px}
-
-.logo-mark{
-  font-family:'Instrument Serif',serif;
-  font-size:28px;font-style:italic;
-  color:var(--accent);
-  letter-spacing:-1px;
-}
-
-.logo-sub{
-  font-family:'DM Mono',monospace;font-size:11px;
-  color:var(--text3);letter-spacing:2px;text-transform:uppercase;
-}
+.logo-mark{font-family:'Instrument Serif',serif;font-size:28px;font-style:italic;color:var(--accent);letter-spacing:-1px}
+.logo-sub{font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);letter-spacing:2px;text-transform:uppercase}
 
 .gh-link{
   font-family:'DM Mono',monospace;font-size:12px;
@@ -141,10 +131,7 @@ main{
 .parse-btn:active{transform:scale(0.97)}
 .parse-btn:disabled{opacity:0.5;cursor:not-allowed}
 
-/* Secondary actions */
-.secondary-row{
-  display:flex;gap:12px;margin-top:14px;align-items:center;
-}
+.secondary-row{display:flex;gap:12px;margin-top:14px;align-items:center;flex-wrap:wrap}
 
 .upload-btn{
   display:flex;align-items:center;gap:8px;
@@ -155,13 +142,9 @@ main{
 }
 .upload-btn:hover{border-color:var(--teal);color:var(--teal);background:var(--teal-dim)}
 .upload-btn.loaded{border-color:var(--teal);border-style:solid;color:var(--teal);background:var(--teal-dim)}
-
 .upload-btn input{display:none}
 
-.help-text{
-  margin-left:auto;
-  font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);
-}
+.help-text{margin-left:auto;font-family:'DM Mono',monospace;font-size:11px;color:var(--text3)}
 
 /* === WORKSPACE === */
 .workspace{
@@ -179,7 +162,6 @@ main{
 .player-card{
   background:var(--card);border:1px solid var(--border);border-radius:14px;
   padding:0;display:flex;flex-direction:column;overflow:hidden;
-  position:relative;
 }
 
 .player-top-line{
@@ -187,7 +169,7 @@ main{
   background:linear-gradient(90deg,transparent,var(--accent),var(--teal),transparent);
 }
 
-.player-inner{padding:28px 28px 24px}
+.player-inner{padding:28px 28px 24px;flex:1;display:flex;flex-direction:column}
 
 .player-label{
   font-family:'DM Mono',monospace;font-size:10px;
@@ -195,67 +177,59 @@ main{
   margin-bottom:14px;
 }
 
+/* === COVER + INFO ROW === */
+.cover-row{
+  display:flex;gap:20px;align-items:flex-start;
+  margin-bottom:24px;
+}
+
+.cover-wrap{
+  flex-shrink:0;
+  width:100px;height:100px;
+  border-radius:10px;overflow:hidden;
+  background:var(--bg2);border:1px solid var(--border);
+  position:relative;
+}
+
+.cover-wrap img{width:100%;height:100%;object-fit:cover;display:block}
+
+.cover-placeholder{
+  width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:32px;opacity:0.25;
+}
+
+.cover-info{flex:1;min-width:0}
+
 .player-title{
   font-family:'Instrument Serif',serif;
-  font-size:28px;font-style:italic;
+  font-size:22px;font-style:italic;
   color:var(--text);line-height:1.3;
   margin-bottom:6px;
+  overflow:hidden;display:-webkit-box;
+  -webkit-line-clamp:2;-webkit-box-orient:vertical;
 }
 
-.player-meta{
-  font-family:'DM Mono',monospace;font-size:11px;
-  color:var(--text3);margin-bottom:28px;
+.player-meta{font-family:'DM Mono',monospace;font-size:11px;color:var(--text3)}
+
+/* === VISUALIZER === */
+.viz-wrap{
+  height:48px;margin-bottom:16px;
+  display:flex;align-items:flex-end;gap:2px;
+  overflow:hidden;
 }
 
-/* YouTube embed area */
-.yt-container{
-  position:relative;
-  width:100%;padding-top:56.25%; /* 16:9 */
-  background:var(--bg2);border-radius:10px;overflow:hidden;
-  margin-bottom:24px;
-  border:1px solid var(--border);
+.viz-bar{
+  flex:1;background:var(--border2);border-radius:2px 2px 0 0;
+  transition:height 0.08s ease;
+  min-height:2px;
 }
 
-.yt-container iframe,
-.yt-container .yt-placeholder{
-  position:absolute;inset:0;width:100%;height:100%;
+.viz-bar.active{
+  background:linear-gradient(180deg,var(--accent),var(--teal));
 }
 
-.yt-placeholder{
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:12px;
-  color:var(--text3);
-}
-
-.yt-placeholder .ph-icon{
-  font-size:40px;opacity:0.4;
-}
-
-.yt-placeholder .ph-text{
-  font-family:'DM Mono',monospace;font-size:12px;
-}
-
-/* Audio-only mode toggle */
-.mode-toggle{
-  display:flex;gap:0;margin-bottom:20px;
-  border:1px solid var(--border);border-radius:8px;overflow:hidden;
-}
-
-.mode-btn{
-  flex:1;padding:8px 0;border:none;
-  background:transparent;color:var(--text3);
-  font-family:'DM Mono',monospace;font-size:11px;
-  cursor:pointer;transition:all 0.3s;
-  letter-spacing:0.5px;
-}
-
-.mode-btn.active{
-  background:var(--accent-dim);color:var(--accent);
-}
-
-.mode-btn:hover:not(.active){color:var(--text2)}
-
-/* Progress */
+/* === PROGRESS === */
 .progress-wrap{margin-bottom:16px}
 
 .progress-track{
@@ -269,7 +243,7 @@ main{
   height:100%;border-radius:3px;
   background:linear-gradient(90deg,var(--accent),var(--teal));
   width:0%;transition:width 0.1s linear;
-  position:relative;
+  pointer-events:none;position:relative;
 }
 
 .progress-fill::after{
@@ -287,7 +261,7 @@ main{
   font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);
 }
 
-/* Controls */
+/* === CONTROLS === */
 .controls{
   display:flex;align-items:center;justify-content:center;gap:16px;
   margin-bottom:20px;
@@ -308,24 +282,21 @@ main{
   border:none;color:var(--bg);
   box-shadow:0 4px 24px rgba(232,180,184,0.25);
 }
-.c-btn.play:hover{
-  transform:scale(1.08);
-  box-shadow:0 6px 32px rgba(232,180,184,0.4);
-}
+.c-btn.play:hover{transform:scale(1.08);box-shadow:0 6px 32px rgba(232,180,184,0.4)}
 
-/* Bottom bar */
+/* === PLAYER BOTTOM === */
 .player-bottom{
   display:flex;align-items:center;gap:12px;
   padding:14px 28px;
   background:var(--bg2);border-top:1px solid var(--border);
 }
 
-.vol-icon{cursor:pointer;font-size:16px;color:var(--text3);transition:color 0.2s}
+.vol-icon{cursor:pointer;font-size:16px;color:var(--text3);transition:color 0.2s;user-select:none}
 .vol-icon:hover{color:var(--text)}
 
 .vol-slider{
   width:90px;-webkit-appearance:none;height:3px;
-  background:var(--border);border-radius:2px;outline:none;
+  background:var(--border);border-radius:2px;outline:none;cursor:pointer;
 }
 .vol-slider::-webkit-slider-thumb{
   -webkit-appearance:none;width:12px;height:12px;
@@ -337,7 +308,7 @@ main{
   padding:4px 10px;
   background:var(--card2);border:1px solid var(--border);border-radius:5px;
   font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);
-  cursor:pointer;transition:all 0.2s;
+  cursor:pointer;transition:all 0.2s;user-select:none;
 }
 .speed-tag:hover{border-color:var(--accent);color:var(--accent)}
 
@@ -352,10 +323,7 @@ main{
   display:flex;justify-content:space-between;align-items:center;
 }
 
-.sub-head-title{
-  font-family:'Instrument Serif',serif;font-size:18px;font-style:italic;
-  color:var(--text);
-}
+.sub-head-title{font-family:'Instrument Serif',serif;font-size:18px;font-style:italic;color:var(--text)}
 
 .sub-count{
   font-family:'DM Mono',monospace;font-size:11px;
@@ -379,31 +347,18 @@ main{
   border-left:2px solid transparent;
 }
 .s-line:hover{background:rgba(255,255,255,0.02)}
-
-.s-line.active{
-  background:var(--accent-dim);
-  border-left-color:var(--accent);
-}
+.s-line.active{background:var(--accent-dim);border-left-color:var(--accent)}
 .s-line.active .s-text{color:var(--sub-active);font-weight:500}
 .s-line.active .s-time{color:var(--accent)}
 .s-line.past .s-text{color:var(--sub-past)}
 
-.s-time{
-  font-family:'DM Mono',monospace;font-size:11px;
-  color:var(--text3);min-width:48px;padding-top:3px;flex-shrink:0;
-}
+.s-time{font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);min-width:48px;padding-top:3px;flex-shrink:0}
+.s-text{font-size:14px;line-height:1.65;color:var(--text2);transition:color 0.3s}
 
-.s-text{
-  font-size:14px;line-height:1.65;color:var(--text2);
-  transition:color 0.3s;
-}
-
-/* Empty state */
 .empty{
   display:flex;flex-direction:column;
   align-items:center;justify-content:center;
-  padding:60px 30px;text-align:center;
-  height:100%;
+  padding:60px 30px;text-align:center;height:100%;
 }
 .empty-icon{font-size:36px;margin-bottom:14px;opacity:0.3}
 .empty-t{font-family:'Instrument Serif',serif;font-size:18px;font-style:italic;margin-bottom:8px;color:var(--text2)}
@@ -422,15 +377,10 @@ main{
 .st-dot.err{background:#e87474}
 
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
-
 .st-text{font-family:'DM Mono',monospace;font-size:11px;color:var(--text3)}
 
 /* === ANIMATIONS === */
-@keyframes fadeUp{
-  from{opacity:0;transform:translateY(16px)}
-  to{opacity:1;transform:translateY(0)}
-}
-
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 .input-section{animation:fadeUp 0.6s ease-out}
 .workspace{animation:fadeUp 0.6s ease-out 0.15s both}
 .status{animation:fadeUp 0.6s ease-out 0.3s both}
@@ -456,11 +406,15 @@ main{
       <button class="parse-btn" id="parseBtn" onclick="handleParse()">解 析</button>
     </div>
     <div class="secondary-row">
+      <label class="upload-btn" id="audioUploadBtn">
+        <span>🎵</span><span id="audioUploadLabel">上传本地音频</span>
+        <input type="file" accept="audio/*" onchange="handleAudioUpload(this)">
+      </label>
       <label class="upload-btn" id="srtUploadBtn">
-        <span>📄</span><span>上传 SRT 字幕</span>
+        <span>📄</span><span id="srtUploadLabel">上传 SRT 字幕</span>
         <input type="file" accept=".srt,.vtt,.txt" onchange="handleSrtUpload(this)">
       </label>
-      <span class="help-text" id="helpText">支持任何 YouTube 视频链接</span>
+      <span class="help-text" id="helpText">支持 YouTube 链接 · 后台播放 · 锁屏控制</span>
     </div>
   </div>
 
@@ -470,27 +424,25 @@ main{
       <div class="player-top-line"></div>
       <div class="player-inner">
         <div class="player-label">now playing</div>
-        <div class="player-title" id="pTitle">等待加载...</div>
-        <div class="player-meta" id="pMeta">输入YouTube链接开始</div>
 
-        <!-- Mode toggle -->
-        <div class="mode-toggle">
-          <button class="mode-btn active" data-mode="video" onclick="setMode('video')">📺 视频模式</button>
-          <button class="mode-btn" data-mode="audio" onclick="setMode('audio')">🎧 纯听模式</button>
-        </div>
-
-        <!-- YouTube embed -->
-        <div class="yt-container" id="ytContainer">
-          <div class="yt-placeholder" id="ytPlaceholder">
-            <div class="ph-icon">◉</div>
-            <div class="ph-text">等待视频加载</div>
+        <!-- Cover + Info -->
+        <div class="cover-row">
+          <div class="cover-wrap" id="coverWrap">
+            <div class="cover-placeholder" id="coverPlaceholder">◉</div>
+            <img id="coverImg" src="" alt="" style="display:none">
           </div>
-          <div id="ytPlayer"></div>
+          <div class="cover-info">
+            <div class="player-title" id="pTitle">等待加载...</div>
+            <div class="player-meta" id="pMeta">输入 YouTube 链接开始</div>
+          </div>
         </div>
 
-        <!-- Progress (used in audio mode or as overlay) -->
+        <!-- Visualizer -->
+        <div class="viz-wrap" id="vizWrap"></div>
+
+        <!-- Progress -->
         <div class="progress-wrap">
-          <div class="progress-track" id="progressTrack" onclick="seekTo(event)">
+          <div class="progress-track" id="progressTrack">
             <div class="progress-fill" id="progressFill"></div>
           </div>
           <div class="time-stamps">
@@ -508,7 +460,7 @@ main{
       </div>
 
       <div class="player-bottom">
-        <span class="vol-icon" onclick="toggleMute()">🔊</span>
+        <span class="vol-icon" id="volIcon" onclick="toggleMute()">🔊</span>
         <input type="range" class="vol-slider" id="volSlider" min="0" max="100" value="80" oninput="setVol(this.value)">
         <span class="speed-tag" id="speedTag" onclick="cycleSpeed()">1.0×</span>
       </div>
@@ -536,287 +488,271 @@ main{
   </div>
 </main>
 
-<!-- YouTube IFrame API -->
+<!-- Hidden audio element — this is what plays on mobile background -->
+<audio id="audioEl" preload="none"></audio>
+
 <script>
 // ================================================================
-// 底层原理注释（给CS初学者看的）
+// API 配置
+// 部署后将此地址替换为 Render 上的真实后端 URL
+// 例如: https://soundscript-api.onrender.com
 // ================================================================
-//
-// 【YouTube IFrame API 的工作原理】
-// 我们在HTML里加载YouTube官方的脚本(iframe_api)，
-// 这个脚本会在全局作用域注入一个 YT.Player 构造函数。
-// 当我们 new YT.Player(...) 时，它做了以下事情：
-//   1. 创建一个 <iframe> 元素，src指向YouTube的嵌入页面
-//   2. 通过 window.postMessage API 在我们的页面和iframe之间通信
-//   3. postMessage 是浏览器提供的跨域通信机制（因为我们的页面
-//      和YouTube的iframe是不同的"源"，正常情况下不能互相访问）
-//   4. YouTube的iframe收到我们的指令（播放/暂停/跳转），执行后
-//      把状态变化通过 postMessage 发回来
-//
-// 【字幕获取的原理】
-// YouTube的字幕数据可以通过公开的URL获取，格式类似：
-// https://www.youtube.com/api/timedtext?v=VIDEO_ID&lang=en
-// 但由于CORS限制，浏览器不能直接请求YouTube的API。
-// 所以我们使用一个免费的代理服务来中转请求，
-// 或者让用户手动上传SRT字幕文件。
-//
-// 【事件循环 & requestAnimationFrame】
-// 浏览器有一个"事件循环"(Event Loop)不断运行：
-//   1. 检查有没有待执行的任务（点击事件、网络响应等）
-//   2. 执行任务
-//   3. 渲染画面
-//   4. 回到第1步
-// requestAnimationFrame 会在每一帧渲染前调用我们的函数，
-// 大约每秒60次。我们利用它来：
-//   - 获取YouTube播放器的当前时间
-//   - 用二分查找定位对应的字幕
-//   - 更新进度条
-// ================================================================
+const API_BASE = 'https://soundscript-api.onrender.com';
 
-let player = null;        // YouTube Player 实例
-let subs = [];            // 字幕数组：[{start, end, text}, ...]
+// ================================================================
+// 状态
+// ================================================================
+const audio = document.getElementById('audioEl');
+let subs = [];
 let playing = false;
 let curSubIdx = -1;
-let raf = null;           // requestAnimationFrame 的 ID
-let mode = 'video';       // 'video' | 'audio'
+let raf = null;
 let speeds = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0];
 let spdIdx = 2;
-let playerReady = false;
-let pendingVideoId = null;
+let isMuted = false;
+let currentTitle = '';
+let currentArtist = '';
+let currentThumbnail = '';
+
+// AudioContext for visualizer
+let audioCtx = null;
+let analyser = null;
+let sourceNode = null;
+let vizBars = [];
+let vizActive = false;
 
 // ================================================================
-// 1. 加载 YouTube IFrame API
+// 初始化可视化条
 // ================================================================
-// 动态创建 <script> 标签加载YouTube的JS文件
-// 这比直接写在HTML里更灵活——你可以控制加载时机
-const tag = document.createElement('script');
-tag.src = 'https://www.youtube.com/iframe_api';
-const firstScript = document.getElementsByTagName('script')[0];
-firstScript.parentNode.insertBefore(tag, firstScript);
+(function initViz() {
+  const wrap = document.getElementById('vizWrap');
+  for (let i = 0; i < 40; i++) {
+    const bar = document.createElement('div');
+    bar.className = 'viz-bar';
+    bar.style.height = '4px';
+    wrap.appendChild(bar);
+    vizBars.push(bar);
+  }
+})();
 
-// YouTube API 加载完成后会自动调用这个全局函数
-// 这是一种"回调"模式——你告诉别人"准备好了叫我"
-function onYouTubeIframeAPIReady() {
-  // 先不创建播放器，等用户输入URL后再创建
-  setStatus('ok', 'YouTube API 已就绪');
+function setupAnalyser() {
+  if (audioCtx) return;
+  try {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 128;
+    sourceNode = audioCtx.createMediaElementSource(audio);
+    sourceNode.connect(analyser);
+    analyser.connect(audioCtx.destination);
+    vizActive = true;
+  } catch(e) {
+    // visualizer not supported
+  }
 }
 
-function createPlayer(videoId) {
-  if (player) {
-    player.loadVideoById(videoId);
-    return;
-  }
-
-  document.getElementById('ytPlaceholder').style.display = 'none';
-
-  player = new YT.Player('ytPlayer', {
-    videoId: videoId,
-    width: '100%',
-    height: '100%',
-    playerVars: {
-      autoplay: 0,
-      controls: 0,        // 隐藏YouTube自带控件，用我们自己的
-      modestbranding: 1,
-      rel: 0,
-      fs: 0,
-      iv_load_policy: 3,  // 隐藏注释
-      cc_load_policy: 0,  // 不自动显示字幕（我们自己显示）
-    },
-    events: {
-      onReady: onPlayerReady,
-      onStateChange: onPlayerStateChange,
-    }
+function drawViz() {
+  if (!vizActive || !analyser) return;
+  const data = new Uint8Array(analyser.frequencyBinCount);
+  analyser.getByteFrequencyData(data);
+  const step = Math.floor(data.length / vizBars.length);
+  vizBars.forEach((bar, i) => {
+    const val = data[i * step] || 0;
+    const h = Math.max(2, (val / 255) * 44);
+    bar.style.height = h + 'px';
+    bar.classList.toggle('active', playing && val > 10);
   });
 }
 
-function onPlayerReady(event) {
-  playerReady = true;
-  const dur = player.getDuration();
-  document.getElementById('totTime').textContent = fmtTime(dur);
-  player.setVolume(document.getElementById('volSlider').value);
-  
-  // 获取视频信息
-  const data = player.getVideoData();
-  document.getElementById('pTitle').textContent = data.title || '未知标题';
-  document.getElementById('pMeta').textContent = `YouTube · ${fmtTime(dur)}`;
-  
-  setStatus('ok', '视频已就绪 — 点击播放');
-}
+// ================================================================
+// 进度条拖拽
+// ================================================================
+const progressTrack = document.getElementById('progressTrack');
+let dragging = false;
 
-function onPlayerStateChange(event) {
-  // YT.PlayerState: PLAYING=1, PAUSED=2, ENDED=0, BUFFERING=3
-  if (event.data === YT.PlayerState.PLAYING) {
-    playing = true;
-    document.getElementById('playBtn').textContent = '⏸';
-    tick();
-  } else if (event.data === YT.PlayerState.PAUSED) {
-    playing = false;
-    document.getElementById('playBtn').textContent = '▶';
-    cancelAnimationFrame(raf);
-  } else if (event.data === YT.PlayerState.ENDED) {
-    playing = false;
-    document.getElementById('playBtn').textContent = '▶';
-    cancelAnimationFrame(raf);
+function seekByEvent(e) {
+  const rect = progressTrack.getBoundingClientRect();
+  const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+  const pct = Math.max(0, Math.min(1, x / rect.width));
+  if (!isNaN(audio.duration)) {
+    audio.currentTime = pct * audio.duration;
   }
 }
 
-// ================================================================
-// 2. 解析 YouTube URL → 提取 Video ID
-// ================================================================
-// YouTube的URL有很多种格式，我们需要从中提取视频ID：
-//   https://www.youtube.com/watch?v=dQw4w9WgXcQ   → dQw4w9WgXcQ
-//   https://youtu.be/dQw4w9WgXcQ                   → dQw4w9WgXcQ
-//   https://www.youtube.com/embed/dQw4w9WgXcQ       → dQw4w9WgXcQ
-//
-// 这里用到"正则表达式"(Regular Expression)——一种描述文本模式的语言
-function extractVideoId(url) {
-  // 这个正则的意思是：
-  // (?:youtube\.com\/.*[?&]v=|youtu\.be\/|youtube\.com\/embed\/)
-  //   → 匹配以上三种URL格式中视频ID之前的部分
-  // ([a-zA-Z0-9_-]{11})
-  //   → 捕获紧跟其后的11个字符（YouTube的ID固定11位）
-  const patterns = [
-    /(?:youtube\.com\/watch\?.*v=)([a-zA-Z0-9_-]{11})/,
-    /(?:youtu\.be\/)([a-zA-Z0-9_-]{11})/,
-    /(?:youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/,
-    /(?:youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/,
-  ];
-  
-  for (const pat of patterns) {
-    const match = url.match(pat);
-    if (match) return match[1];
-  }
-  return null;
-}
+progressTrack.addEventListener('mousedown', (e) => { dragging = true; seekByEvent(e); });
+progressTrack.addEventListener('touchstart', (e) => { dragging = true; seekByEvent(e); }, {passive:true});
+window.addEventListener('mousemove', (e) => { if (dragging) seekByEvent(e); });
+window.addEventListener('touchmove', (e) => { if (dragging) seekByEvent(e); }, {passive:true});
+window.addEventListener('mouseup', () => { dragging = false; });
+window.addEventListener('touchend', () => { dragging = false; });
 
 // ================================================================
-// 3. 获取字幕
+// 解析 YouTube 链接
 // ================================================================
-async function fetchSubtitles(videoId) {
-  setStatus('wait', '正在获取字幕...');
-  
+async function handleParse() {
+  const url = document.getElementById('urlInput').value.trim();
+  if (!url) return;
+
+  const btn = document.getElementById('parseBtn');
+  btn.disabled = true;
+  setStatus('wait', '正在连接后端，首次启动约需 30 秒...');
+
   try {
-    // 尝试通过公开的代理服务获取YouTube字幕
-    // 这些是社区维护的免费API
-    const proxyUrls = [
-      `https://yt-subtitle-api.vercel.app/api?id=${videoId}`,
-      `https://deserving-harmony.surge.sh/api/transcript?videoId=${videoId}`,
-    ];
-    
-    for (const apiUrl of proxyUrls) {
-      try {
-        const resp = await fetch(apiUrl, { signal: AbortSignal.timeout(5000) });
-        if (resp.ok) {
-          const data = await resp.json();
-          if (data && data.length > 0) {
-            subs = data.map(item => ({
-              start: parseFloat(item.start || item.offset || 0),
-              end: parseFloat(item.start || item.offset || 0) + parseFloat(item.dur || item.duration || 3),
-              text: (item.text || item.content || '').replace(/<[^>]*>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&#39;/g, "'").replace(/&quot;/g, '"'),
-            }));
-            renderSubs();
-            setStatus('ok', `已加载 ${subs.length} 条字幕`);
-            return;
-          }
-        }
-      } catch(e) { continue; }
+    // 并发请求音频和字幕
+    const [audioRes, subsRes] = await Promise.allSettled([
+      fetch(`${API_BASE}/api/extract`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({url}),
+      }),
+      fetch(`${API_BASE}/api/subtitles`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({url}),
+      }),
+    ]);
+
+    // 处理音频
+    if (audioRes.status === 'fulfilled' && audioRes.value.ok) {
+      const data = await audioRes.value.json();
+      if (data.success && data.audio_url) {
+        loadAudio(data.audio_url, data.title, data.uploader, data.thumbnail, data.duration);
+        setStatus('ok', '音频已就绪 — 支持手机后台播放');
+      } else {
+        setStatus('err', data.error || '音频提取失败');
+      }
+    } else {
+      setStatus('err', '无法连接后端，请稍后重试');
     }
-    
-    // 如果自动获取失败，提示用户上传
-    subs = [];
-    renderSubs();
-    setStatus('ok', '未找到自动字幕 — 你可以上传 SRT 文件');
-    document.getElementById('helpText').textContent = '💡 该视频暂无自动字幕，试试上传SRT文件';
-    document.getElementById('helpText').style.color = 'var(--gold)';
-    
-  } catch (err) {
-    setStatus('err', '字幕获取失败');
+
+    // 处理字幕
+    if (subsRes.status === 'fulfilled' && subsRes.value.ok) {
+      const sdata = await subsRes.value.json();
+      if (sdata.success && sdata.subtitles?.length > 0) {
+        subs = sdata.subtitles;
+        renderSubs();
+      }
+    }
+
+  } catch(err) {
+    setStatus('err', '网络错误: ' + err.message);
+  } finally {
+    btn.disabled = false;
   }
 }
 
+function loadAudio(src, title, artist, thumbnail, duration) {
+  audio.src = src;
+  audio.load();
+  audio.volume = document.getElementById('volSlider').value / 100;
+  audio.playbackRate = speeds[spdIdx];
+
+  currentTitle = title || '未知标题';
+  currentArtist = artist || 'YouTube';
+  currentThumbnail = thumbnail || '';
+
+  document.getElementById('pTitle').textContent = currentTitle;
+  document.getElementById('pMeta').textContent = `${currentArtist} · ${fmtTime(duration || 0)}`;
+  document.getElementById('totTime').textContent = fmtTime(duration || 0);
+
+  if (currentThumbnail) {
+    const img = document.getElementById('coverImg');
+    img.src = currentThumbnail;
+    img.style.display = 'block';
+    document.getElementById('coverPlaceholder').style.display = 'none';
+  }
+
+  updateMediaSession();
+}
+
 // ================================================================
-// 4. 核心循环：时间同步 + 字幕查找
+// Audio element events
+// ================================================================
+audio.addEventListener('loadedmetadata', () => {
+  document.getElementById('totTime').textContent = fmtTime(audio.duration);
+});
+
+audio.addEventListener('play', () => {
+  playing = true;
+  document.getElementById('playBtn').textContent = '⏸';
+  if (!audioCtx) setupAnalyser();
+  if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+  tick();
+  updateMediaSession();
+});
+
+audio.addEventListener('pause', () => {
+  playing = false;
+  document.getElementById('playBtn').textContent = '▶';
+  cancelAnimationFrame(raf);
+  vizBars.forEach(b => { b.style.height = '4px'; b.classList.remove('active'); });
+});
+
+audio.addEventListener('ended', () => {
+  playing = false;
+  document.getElementById('playBtn').textContent = '▶';
+  cancelAnimationFrame(raf);
+});
+
+audio.addEventListener('error', () => {
+  setStatus('err', '音频加载失败（可能是直链已过期，请重新解析）');
+});
+
+// ================================================================
+// 主循环：进度 + 字幕同步 + 可视化
 // ================================================================
 function tick() {
-  if (!player || !playing) return;
-  
-  const t = player.getCurrentTime();
-  const dur = player.getDuration();
-  
-  // 更新进度条
-  if (dur > 0) {
+  if (!playing) return;
+  const t = audio.currentTime;
+  const dur = audio.duration || 0;
+
+  if (dur > 0 && !dragging) {
     document.getElementById('progressFill').style.width = (t / dur * 100) + '%';
     document.getElementById('curTime').textContent = fmtTime(t);
   }
-  
+
   // 二分查找当前字幕
-  // -------------------------------------------------------
-  // 为什么用二分查找？
-  // 假设有500条字幕，线性查找平均需要比较250次
-  // 二分查找只需要 log2(500) ≈ 9 次
-  // 每秒60帧，线性查找每秒做 250×60=15000 次比较
-  // 二分查找只做 9×60=540 次——节省了96%的计算量
-  // 在手机上这个差距会影响流畅度
-  // -------------------------------------------------------
   if (subs.length > 0) {
     let newIdx = -1;
     let lo = 0, hi = subs.length - 1;
-    
     while (lo <= hi) {
-      const mid = (lo + hi) >> 1;  // >> 1 等价于 Math.floor(÷2)，但更快
-      // 位运算(bit operation)直接操作二进制，
-      // 右移1位就是除以2，CPU一个时钟周期就能完成
-      
+      const mid = (lo + hi) >> 1;
       if (subs[mid].start <= t) {
-        if (subs[mid].end > t) {
-          newIdx = mid;
-          break;
-        }
+        if (subs[mid].end > t) { newIdx = mid; break; }
         lo = mid + 1;
       } else {
         hi = mid - 1;
       }
     }
-    
     if (newIdx !== curSubIdx) {
       curSubIdx = newIdx;
       highlightSub();
     }
   }
-  
+
+  drawViz();
   raf = requestAnimationFrame(tick);
 }
 
 // ================================================================
-// 5. 字幕渲染 & 高亮
+// 字幕渲染 & 高亮
 // ================================================================
 function renderSubs() {
   const c = document.getElementById('subScroll');
-  const empty = document.getElementById('emptyState');
-  
-  if (subs.length === 0) {
-    empty.style.display = '';
-    document.getElementById('subCount').textContent = '—';
-    return;
-  }
-  
-  empty.style.display = 'none';
+  document.getElementById('emptyState').style.display = 'none';
   c.innerHTML = '';
-  
+
   subs.forEach((s, i) => {
     const line = document.createElement('div');
     line.className = 's-line';
     line.dataset.i = i;
-    line.innerHTML = `<span class="s-time">${fmtTime(s.start)}</span><span class="s-text">${s.text}</span>`;
+    line.innerHTML = `<span class="s-time">${fmtTime(s.start)}</span><span class="s-text">${escapeHtml(s.text)}</span>`;
     line.addEventListener('click', () => {
-      if (player && playerReady) {
-        player.seekTo(s.start, true);
-        if (!playing) player.playVideo();
-      }
+      audio.currentTime = s.start;
+      if (audio.paused) audio.play();
     });
     c.appendChild(line);
   });
-  
+
   document.getElementById('subCount').textContent = subs.length + ' lines';
 }
 
@@ -827,131 +763,119 @@ function highlightSub() {
     if (i === curSubIdx) el.classList.add('active');
     else if (curSubIdx >= 0 && i < curSubIdx) el.classList.add('past');
   });
-  
+
   if (curSubIdx >= 0 && lines[curSubIdx]) {
     const container = document.getElementById('subScroll');
-    const el = lines[curSubIdx];
-    container.scrollTop = el.offsetTop - container.clientHeight / 3;
+    container.scrollTop = lines[curSubIdx].offsetTop - container.clientHeight / 3;
   }
 }
 
 // ================================================================
-// 6. 用户交互处理
+// MediaSession API — 锁屏控制 & 通知栏
 // ================================================================
-function handleParse() {
-  const url = document.getElementById('urlInput').value.trim();
-  if (!url) return;
-  
-  const vid = extractVideoId(url);
-  if (!vid) {
-    setStatus('err', '无法识别的YouTube链接');
-    return;
-  }
-  
-  setStatus('wait', '正在加载视频...');
-  document.getElementById('parseBtn').disabled = true;
-  
-  // 如果YouTube API还没加载完，先记下来
-  if (typeof YT === 'undefined' || !YT.Player) {
-    pendingVideoId = vid;
-    setStatus('wait', '正在加载YouTube API...');
-    // 重写回调
-    window.onYouTubeIframeAPIReady = function() {
-      createPlayer(pendingVideoId);
-      fetchSubtitles(pendingVideoId);
-      document.getElementById('parseBtn').disabled = false;
-    };
-    return;
-  }
-  
-  createPlayer(vid);
-  fetchSubtitles(vid);
-  document.getElementById('parseBtn').disabled = false;
+function updateMediaSession() {
+  if (!('mediaSession' in navigator)) return;
+
+  navigator.mediaSession.metadata = new MediaMetadata({
+    title: currentTitle,
+    artist: currentArtist,
+    album: 'SoundScript',
+    artwork: currentThumbnail ? [
+      {src: currentThumbnail, sizes: '512x512', type: 'image/jpeg'},
+    ] : [],
+  });
+
+  navigator.mediaSession.setActionHandler('play', () => audio.play());
+  navigator.mediaSession.setActionHandler('pause', () => audio.pause());
+  navigator.mediaSession.setActionHandler('seekbackward', () => { audio.currentTime = Math.max(0, audio.currentTime - 10); });
+  navigator.mediaSession.setActionHandler('seekforward', () => { audio.currentTime = Math.min(audio.duration, audio.currentTime + 10); });
+  navigator.mediaSession.setActionHandler('seekto', (details) => {
+    if (details.seekTime !== undefined) audio.currentTime = details.seekTime;
+  });
 }
 
-// 回车键也能触发解析
-document.getElementById('urlInput').addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') handleParse();
-});
-
+// ================================================================
+// 控制函数
+// ================================================================
 function togglePlay() {
-  if (!player || !playerReady) return;
-  if (playing) {
-    player.pauseVideo();
+  if (!audio.src) return;
+  if (audio.paused) {
+    audio.play().catch(e => setStatus('err', '播放失败: ' + e.message));
   } else {
-    player.playVideo();
+    audio.pause();
   }
 }
 
 function skip(sec) {
-  if (!player || !playerReady) return;
-  const t = player.getCurrentTime();
-  player.seekTo(Math.max(0, t + sec), true);
-}
-
-function seekTo(e) {
-  if (!player || !playerReady) return;
-  const rect = e.currentTarget.getBoundingClientRect();
-  const pct = (e.clientX - rect.left) / rect.width;
-  player.seekTo(pct * player.getDuration(), true);
+  if (!audio.src) return;
+  audio.currentTime = Math.max(0, Math.min(audio.duration || 0, audio.currentTime + sec));
 }
 
 function setVol(v) {
-  if (player && playerReady) player.setVolume(v);
+  audio.volume = v / 100;
+  isMuted = (v == 0);
+  document.getElementById('volIcon').textContent = isMuted ? '🔇' : '🔊';
 }
 
 function toggleMute() {
-  if (!player || !playerReady) return;
-  if (player.isMuted()) {
-    player.unMute();
-    document.querySelector('.vol-icon').textContent = '🔊';
+  if (isMuted) {
+    audio.muted = false;
+    isMuted = false;
+    document.getElementById('volIcon').textContent = '🔊';
   } else {
-    player.mute();
-    document.querySelector('.vol-icon').textContent = '🔇';
+    audio.muted = true;
+    isMuted = true;
+    document.getElementById('volIcon').textContent = '🔇';
   }
 }
 
 function cycleSpeed() {
   spdIdx = (spdIdx + 1) % speeds.length;
-  const s = speeds[spdIdx];
-  if (player && playerReady) player.setPlaybackRate(s);
-  document.getElementById('speedTag').textContent = s + '×';
-}
-
-function setMode(m) {
-  mode = m;
-  document.querySelectorAll('.mode-btn').forEach(b => {
-    b.classList.toggle('active', b.dataset.mode === m);
-  });
-  const container = document.getElementById('ytContainer');
-  if (m === 'audio') {
-    container.style.height = '0';
-    container.style.paddingTop = '0';
-    container.style.overflow = 'hidden';
-    container.style.marginBottom = '0';
-    container.style.border = 'none';
-  } else {
-    container.style.height = '';
-    container.style.paddingTop = '56.25%';
-    container.style.overflow = '';
-    container.style.marginBottom = '';
-    container.style.border = '';
-  }
+  audio.playbackRate = speeds[spdIdx];
+  document.getElementById('speedTag').textContent = speeds[spdIdx] + '×';
 }
 
 // ================================================================
-// 7. SRT 文件上传解析
+// 上传本地音频
+// ================================================================
+function handleAudioUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  document.getElementById('audioUploadBtn').classList.add('loaded');
+  document.getElementById('audioUploadLabel').textContent = file.name.slice(0, 20);
+
+  const objUrl = URL.createObjectURL(file);
+  currentTitle = file.name.replace(/\.[^.]+$/, '');
+  currentArtist = '本地文件';
+  currentThumbnail = '';
+
+  document.getElementById('pTitle').textContent = currentTitle;
+  document.getElementById('pMeta').textContent = '本地音频文件';
+  document.getElementById('coverImg').style.display = 'none';
+  document.getElementById('coverPlaceholder').style.display = 'flex';
+
+  audio.src = objUrl;
+  audio.load();
+  updateMediaSession();
+  setStatus('ok', '本地音频已加载 — 点击播放');
+}
+
+// ================================================================
+// 上传 SRT / VTT 字幕
 // ================================================================
 function handleSrtUpload(input) {
   const file = input.files[0];
   if (!file) return;
-  
+
   document.getElementById('srtUploadBtn').classList.add('loaded');
-  document.getElementById('srtUploadBtn').querySelector('span:last-of-type').textContent = file.name;
-  
+  document.getElementById('srtUploadLabel').textContent = file.name.slice(0, 20);
+
   const reader = new FileReader();
   reader.onload = (e) => {
-    subs = parseSRT(e.target.result);
+    const raw = e.target.result;
+    subs = file.name.endsWith('.vtt') ? parseVTT(raw) : parseSRT(raw);
+    curSubIdx = -1;
     renderSubs();
     setStatus('ok', `字幕已加载 — ${subs.length} 行`);
   };
@@ -961,18 +885,35 @@ function handleSrtUpload(input) {
 function parseSRT(text) {
   const result = [];
   const blocks = text.trim().replace(/\r\n/g, '\n').split(/\n\n+/);
-  
   for (const block of blocks) {
     const lines = block.split('\n');
     for (let i = 0; i < lines.length; i++) {
-      const m = lines[i].match(
-        /(\d{1,2}):(\d{2}):(\d{2})[,.](\d{3})\s*-->\s*(\d{1,2}):(\d{2}):(\d{2})[,.](\d{3})/
-      );
+      const m = lines[i].match(/(\d{1,2}):(\d{2}):(\d{2})[,.](\d{3})\s*-->\s*(\d{1,2}):(\d{2}):(\d{2})[,.](\d{3})/);
       if (m) {
         const start = +m[1]*3600 + +m[2]*60 + +m[3] + +m[4]/1000;
         const end   = +m[5]*3600 + +m[6]*60 + +m[7] + +m[8]/1000;
-        const txt = lines.slice(i+1).filter(l => l.trim()).join(' ');
-        if (txt) result.push({ start, end, text: txt });
+        const txt = lines.slice(i+1).filter(l => l.trim()).join(' ').replace(/<[^>]+>/g, '');
+        if (txt) result.push({start, end, text: txt});
+        break;
+      }
+    }
+  }
+  return result;
+}
+
+function parseVTT(text) {
+  const result = [];
+  const blocks = text.replace(/\r\n/g, '\n').split(/\n\n+/);
+  for (const block of blocks) {
+    const lines = block.split('\n');
+    for (let i = 0; i < lines.length; i++) {
+      const m = lines[i].match(/(\d{1,2}):(\d{2}):(\d{2})[.,](\d{3})\s*-->\s*(\d{1,2}):(\d{2}):(\d{2})[.,](\d{3})/);
+      if (m) {
+        const start = +m[1]*3600 + +m[2]*60 + +m[3] + +m[4]/1000;
+        const end   = +m[5]*3600 + +m[6]*60 + +m[7] + +m[8]/1000;
+        const txt = lines.slice(i+1).filter(l => l.trim() && !l.startsWith('NOTE')).join(' ').replace(/<[^>]+>/g, '');
+        if (txt) result.push({start, end, text: txt});
+        break;
       }
     }
   }
@@ -990,9 +931,18 @@ function fmtTime(s) {
 }
 
 function setStatus(state, text) {
-  document.getElementById('stDot').className = 'st-dot ' + ({ok:'ok',wait:'wait',err:'err'}[state]||'');
+  document.getElementById('stDot').className = 'st-dot ' + ({'ok':'ok','wait':'wait','err':'err'}[state] || '');
   document.getElementById('stText').textContent = text;
 }
+
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// 回车触发解析
+document.getElementById('urlInput').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') handleParse();
+});
 </script>
 
 </body>
